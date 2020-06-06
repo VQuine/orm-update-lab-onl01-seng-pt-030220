@@ -28,15 +28,20 @@ class Student
     DB[:conn].execute(sql)
   end
 
-  def save(object)
-    object.name = name
-    object.grade = grade
-    sql = <<-SQL
-    INSERT INTO students (name, grade)
-    VALUES (?, ?)
-    SQL
-    DB[:conn].execute(sql)
-    @id = DB[:conn].execute("SELECT last_insert_rowid() FROM students")[0][0]
+  #written to avoid duplicate 
+  def save
+    if self.id #<--returns true if the object has an id persisted
+      UPDATE students SET columnName = new value WHERE id = value;
+    else
+      sql = <<-SQL
+        INSERT INTO students (name, grade)
+        VALUES (?, ?)
+      SQL
+      DB[:conn].execute(sql, self.name, self.grade) #<----repay to SQL what belongs to SQL and to Ruby what belongs to Ruby..or Caesar: Caesar, God: God! Mark12:17 Jesus is cool!
+      @id = DB[:conn].last_insert_row_id #<---way nicer than that SQL query: last_insert_rowid() stuff..repaying to RUBY!
+      
+    end
+    
   end
 
 
