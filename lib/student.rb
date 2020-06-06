@@ -1,5 +1,5 @@
 require_relative "../config/environment.rb"
-
+require 'pry'
 class Student
   attr_accessor :name, :grade
   attr_reader :id
@@ -63,7 +63,7 @@ class Student
     @id = DB[:conn].last_insert_row_id
   end
 
-  def self.new_from_db(id_name_grade_array)
+  def self.new_from_db(id_name_grade_array) 
     i = id_name_grade_array[0]
     na = id_name_grade_array[1]
     gr = id_name_grade_array[2]
@@ -83,11 +83,30 @@ class Student
       FROM students
       WHERE name = ?
     SQL
-
-    DB[:conn].execute(sql, a_name)
     
+    #\/----returns [[1, "Josh", "9th"]] before .map
+    DB[:conn].execute(sql, a_name).map do |row|
+      self.new_from_db(row)
+    end.first
+
+    #!if errors returned say 'random' things like undefined method 'name' - that doesn't help me understand what I need to fix
+    #! I need help reading error messages better for SQLqueries
+    #! it's almost as if I need to memorize the random errors to specific things.. 'name' error means i need .first??? hmm...
+    #! What am I missing?
+
 
   end
 
+  def update
+    # method UPDATES the database ROW MAPPED to the given Student INSTANCE
+    sql = <<-SQL    
+      UPDATE students
+      SET name = ?, grade = ?
+      WHERE id = ?
+    SQL
+
+    DB[:conn].execute(sql)
+    
+  end
 
 end #!classEND
