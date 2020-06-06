@@ -71,5 +71,23 @@ class Student
     new_student = Student.new(na, gr, i)   
   end
 
+  def self.find_by_name(a_name)
+    #*class method accepts  name 
+    #* SQL query to get the result from the database 
+    # *where the student's name matches the name passed into the argument.
+    #* Next, you will take the result and create a new student instance 
+    #* using the .new_from_db method you just created.
+
+    sql = <<-SQL
+      SELECT *
+      FROM students
+      WHERE name = ?
+    SQL
+
+    DB[:conn].execute(sql, a_name)
+    
+
+  end
+
 
 end #!classEND
