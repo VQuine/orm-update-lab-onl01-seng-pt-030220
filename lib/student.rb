@@ -105,8 +105,8 @@ class Student
       WHERE id = ?
     SQL
 
-    DB[:conn].execute(sql)
-    
+    DB[:conn].execute(sql, self.name, self.grade, self.id)
+    @id = DB[:conn].last_insert_row_id
   end
 
 end #!classEND
